@@ -1,12 +1,10 @@
-import React from 'react'
 import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 import { useId } from 'react';
-import * as Yup from "yup";
-import { nanoid } from 'nanoid';
-import css from "./ContactForm.module.css";
-
 import { useDispatch } from 'react-redux';
-import { addContact } from '../../redux/contactSlice';
+
+import css from './ContactForm.module.css';
+import { addContact } from '../../redux/contactsOps';
 
 
 const initialValues = {
@@ -32,10 +30,13 @@ const ContactForm = () => {
 
     const dispatch = useDispatch();
     
-    function handleSubmit(contact, actions) {
-    dispatch(addContact(contact));
-    actions.resetForm();
-  }
+    const handleSubmit = (values, actions) => {
+        dispatch(addContact(values));
+
+        actions.setSubmitting(false);
+        actions.resetForm();
+
+     }; 
 
 
     return (
@@ -44,30 +45,33 @@ const ContactForm = () => {
             onSubmit={handleSubmit}
             validationSchema={FormSchema}
         >
-            <Form className={css.form}>
-                <div className={css.inputWrap}>
-                    <label className={css.formLabel}></label>
-                    <Field
-                        className={css.formField}
-                        type='text' 
-                        name="name"
-                        id={nameFieldId}>
-                    </Field>
-                    <ErrorMessage name="name" component="span" className={css.error} />
-                </div>
-                <div className={css.inputWrap}>
-                    <label className={css.formLabel}></label>
-                    <Field
-                        className={css.formField}
-                        type="text"
-                        name="number"
-                        id={numberFieldId}>
-                        
-                    </Field>
-                    <ErrorMessage name="number" component="span" className={css.error} />
-                </div>
-            <button className={css.formButton} type='submit'>Add contact</button>
-            </Form>
+            {({ isSubmitting }) => (
+                <Form className={css.form}>
+                    <div className={css.inputWrap}>
+                        <label className={css.formLabel}></label>
+                        <Field
+                            className={css.formField}
+                            type='text' 
+                            name="name"
+                            id={nameFieldId}>
+                        </Field>
+                        <ErrorMessage name="name" component="span" className={css.error} />
+                    </div>
+                    <div className={css.inputWrap}>
+                        <label className={css.formLabel}></label>
+                        <Field
+                            className={css.formField}
+                            type="tel"
+                            name="number"
+                            id={numberFieldId}>
+                        </Field>
+                        <ErrorMessage name="number" component="span" className={css.error} />
+                    </div>
+                    <button className={css.formButton} type='submit' disabled={isSubmitting}>Add contact</button>
+                </Form>
+                
+            )}
+            
         </Formik>
   )
 }

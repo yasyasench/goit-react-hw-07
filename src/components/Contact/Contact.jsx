@@ -4,30 +4,37 @@ import css from "./Contact.module.css"
 import PropTypes from 'prop-types';
 
 import { useDispatch } from 'react-redux';
-import { deleteContact } from '../../redux/contactSlice';
+import { deleteContact } from '../../redux/contactsOps';
 
 
-const Contact = ({ contact }) => {
+
+const Contact = ({ id, name,number }) => {
   const dispatch = useDispatch();
+  const handleDelete = () => dispatch(deleteContact(id));
 
   return (
-    <div className={css.contactItem}>
+    <li className={css.contactItem}>
+
       <div className={css.contactInfo}>
+
         <div className={css.info}>
           <HiUser size={"20px"} title="contact icon" />
-          <p>{contact.name}</p>
+          <p>{name}</p>
         </div>
+
         <div className={css.info}>
           <HiPhone size={"20px"} title="phone icon" />
-          <p>{contact.number}</p> {/* Исправлено на contact.number */}
+          <p>{number}</p> 
         </div>
+
       </div>
+
       <button
         className={css.deleteButton}
-        onClick={() => dispatch(deleteContact(contact.id))}>
+        onClick={handleDelete}>
         Delete
       </button>
-    </div>
+    </li>
   )
 }
 
